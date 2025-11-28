@@ -45,17 +45,14 @@ export default function Workspace() {
         throw new Error(data.error || '조합 실패');
       }
 
-      // Check if we already have this element in inventory
-      const isAlreadyDiscovered = inventory.some(e => e.id === data.result.id);
-      
-      // Only delay if it's a new discovery for the user
-      if (!isAlreadyDiscovered) {
+      // Only delay if it's a global new discovery (AI generated)
+      if (data.isNewDiscovery) {
         await new Promise(resolve => setTimeout(resolve, 1500));
       }
       
       const finalResult = {
         ...data.result,
-        is_first_discovery: !isAlreadyDiscovered
+        is_first_discovery: data.isNewDiscovery
       };
 
       setResult(finalResult);
