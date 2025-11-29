@@ -144,7 +144,7 @@ export default function Workspace() {
               animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
               exit={{ scale: 0.5, opacity: 0, filter: "blur(10px)" }}
               transition={{ type: "spring", stiffness: 200, damping: 20 }}
-              className="flex flex-col items-center gap-8 md:gap-12"
+              className="flex flex-col items-center gap-4 md:gap-12"
             >
               <div className="relative group">
                 <div className={clsx("absolute inset-0 blur-[80px] rounded-full opacity-50 transition-colors duration-1000", theme === 'nature' ? 'bg-emerald-500' : 'bg-purple-500')} />
@@ -182,7 +182,7 @@ export default function Workspace() {
                 onClick={handleReset}
                 data-html2canvas-ignore
                 className={clsx(
-                    "px-12 py-4 rounded-full border-2 transition-all duration-300 font-black shadow-xl text-base md:text-lg backdrop-blur-xl uppercase tracking-widest",
+                    "px-8 py-3 md:px-12 md:py-4 rounded-full border-2 transition-all duration-300 font-black shadow-xl text-sm md:text-lg backdrop-blur-xl uppercase tracking-widest",
                     themeColors.cardBg,
                     themeColors.cardBorder,
                     themeColors.textPrimary,
