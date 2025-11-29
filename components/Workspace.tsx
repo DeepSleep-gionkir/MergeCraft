@@ -47,7 +47,7 @@ export default function Workspace() {
 
       // Only delay if it's a global new discovery (AI generated)
       if (data.isNewDiscovery) {
-        await new Promise(resolve => setTimeout(resolve, 1500));
+        await new Promise(resolve => setTimeout(resolve, 800));
       }
       
       const finalResult = {
