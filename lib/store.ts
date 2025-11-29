@@ -76,8 +76,10 @@ export const useGameStore = create<GameState>()(
 
       addKnownRecipe: (idA, idB, result) => {
         const key = `${Math.min(idA, idB)}-${Math.max(idA, idB)}`;
+        // Ensure cached items never trigger "New Discovery" again
+        const cachedResult = { ...result, is_first_discovery: false };
         set((state) => ({
-            knownRecipes: { ...state.knownRecipes, [key]: result }
+            knownRecipes: { ...state.knownRecipes, [key]: cachedResult }
         }));
       },
 
