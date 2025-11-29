@@ -143,9 +143,9 @@ export default function Workspace() {
               </motion.button>
             </motion.div>
           ) : (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-[2vmin] sm:gap-8 w-full px-4">
+            <div className="flex flex-row items-center justify-center gap-[2vmin] sm:gap-8 w-full px-4">
                {/* Slot 1 */}
-               <div className="relative group flex-1 flex justify-center sm:justify-end w-full sm:w-auto">
+               <div className="relative group flex-1 flex justify-end w-full sm:w-auto">
                  <div className={clsx("absolute inset-0 bg-gradient-to-b from-transparent to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500")} />
                  {workspace[0] ? (
                     <motion.div layoutId="slot1" className="relative z-10">
@@ -168,9 +168,9 @@ export default function Workspace() {
                </div>
 
                {/* Connection / Status */}
-               <div className="flex flex-col items-center justify-center w-[10vmin] md:w-32 relative z-10 shrink-0 rotate-90 sm:rotate-0 my-2 sm:my-0">
+               <div className="flex flex-col items-center justify-center w-[10vmin] md:w-32 relative z-10 shrink-0 my-0">
                   {/* Energy Line */}
-                  <div className={clsx("absolute top-1/2 left-0 w-full h-1 -translate-y-1/2 rounded-full overflow-hidden hidden sm:block", themeColors.cardBg)}>
+                  <div className={clsx("absolute top-1/2 left-0 w-full h-1 -translate-y-1/2 rounded-full overflow-hidden block", themeColors.cardBg)}>
                     <div className={clsx("absolute inset-0 w-full h-full animate-pulse opacity-50", theme === 'nature' ? 'bg-emerald-500' : 'bg-purple-500')} />
                   </div>
 
@@ -187,7 +187,7 @@ export default function Workspace() {
                </div>
 
                {/* Slot 2 */}
-               <div className="relative group flex-1 flex justify-center sm:justify-start w-full sm:w-auto">
+               <div className="relative group flex-1 flex justify-start w-full sm:w-auto">
                  <div className={clsx("absolute inset-0 bg-gradient-to-b from-transparent to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500")} />
                  {workspace[1] ? (
                     <motion.div layoutId="slot2" className="relative z-10">
