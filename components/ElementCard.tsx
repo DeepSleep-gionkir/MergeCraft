@@ -31,7 +31,7 @@ const ElementCard = React.memo(({ element, onClick, className, compact = false, 
         'relative border cursor-pointer transition-all duration-300 select-none shadow-xl backdrop-blur-xl overflow-hidden group transform-gpu',
         layout === 'grid' 
             ? 'flex flex-col items-center justify-center rounded-2xl' 
-            : 'flex flex-row items-center justify-start px-4 py-3 gap-4 rounded-xl w-full',
+            : 'flex flex-row items-center justify-start px-4 py-5 gap-4 rounded-xl w-full',
         layout === 'grid' && (compact ? 'p-2 gap-1' : 'p-4 gap-2'),
         themeColors.cardBg,
         themeColors.cardBorder,

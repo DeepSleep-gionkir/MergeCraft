@@ -131,24 +131,24 @@ export default function Workspace() {
                     element={result} 
                     className={clsx("w-48 h-48 md:w-64 md:h-64 text-7xl md:text-9xl shadow-2xl border-4 z-10 relative", themeColors.accentGlow, themeColors.cardBorder)} 
                 />
-                
-                {result.is_first_discovery && (
-                    <motion.div 
-                        initial={{ y: 20, opacity: 0, scale: 0.8 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        className="absolute -bottom-16 left-1/2 -translate-x-1/2 whitespace-nowrap bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-6 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] flex items-center gap-2 md:gap-3 z-20 border-2 border-white/30 text-sm md:text-lg tracking-wide"
-                    >
-                        <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" /> NEW DISCOVERY!
-                    </motion.div>
-                )}
               </div>
+
+              {result.is_first_discovery && (
+                <motion.div 
+                    initial={{ y: 20, opacity: 0, scale: 0.8 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    className="whitespace-nowrap bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-6 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] flex items-center gap-2 md:gap-3 z-20 border-2 border-white/30 text-sm md:text-lg tracking-wide"
+                >
+                    <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" /> NEW DISCOVERY!
+                </motion.div>
+              )}
               
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleReset}
                 className={clsx(
-                    "mt-8 px-12 py-4 rounded-full border-2 transition-all duration-300 font-black shadow-xl text-base md:text-lg backdrop-blur-xl uppercase tracking-widest",
+                    "px-12 py-4 rounded-full border-2 transition-all duration-300 font-black shadow-xl text-base md:text-lg backdrop-blur-xl uppercase tracking-widest",
                     themeColors.cardBg,
                     themeColors.cardBorder,
                     themeColors.textPrimary,
