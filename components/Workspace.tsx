@@ -3,11 +3,12 @@
 import { useGameStore } from '@/lib/store';
 import ElementCard from './ElementCard';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useEffect } from 'react';
-import { Loader2, Sparkles, Trash2, Plus } from 'lucide-react';
+import { useState, useEffect, useRef } from 'react';
+import { Loader2, Sparkles, Trash2, Plus, Download } from 'lucide-react';
 import { Element } from '@/types';
 import { themes } from '@/lib/themes';
 import clsx from 'clsx';
+import html2canvas from 'html2canvas';
 
 export default function Workspace() {
   const { workspace, removeFromWorkspace, clearWorkspace, addToInventory, theme, markAsSeen, inventory, knownRecipes, addKnownRecipe } = useGameStore();
@@ -15,6 +16,7 @@ export default function Workspace() {
   const [result, setResult] = useState<Element | null>(null);
   const [error, setError] = useState<string | null>(null);
   const themeColors = themes[theme].colors;
+  const captureRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (workspace.length === 2 && !isCombining && !result) {
@@ -90,6 +92,26 @@ export default function Workspace() {
     clearWorkspace();
   };
 
+  const handleDownload = async () => {
+    if (!captureRef.current || !result) return;
+
+    try {
+      const canvas = await html2canvas(captureRef.current, {
+        backgroundColor: null,
+        scale: 2,
+        logging: false,
+        useCORS: true,
+      });
+
+      const link = document.createElement('a');
+      link.download = `discovery-${result.text.replace(/\s+/g, '-').toLowerCase()}.png`;
+      link.href = canvas.toDataURL('image/png');
+      link.click();
+    } catch (err) {
+      console.error('Screenshot failed:', err);
+    }
+  };
+
   return (
     <div className="flex-1 h-full relative overflow-hidden flex flex-col items-center justify-center p-4 md:p-8">
       {/* Dynamic Background */}
@@ -117,6 +139,7 @@ export default function Workspace() {
         <AnimatePresence mode="wait">
           {result ? (
             <motion.div
+              ref={captureRef}
               initial={{ scale: 0.5, opacity: 0, filter: "blur(10px)" }}
               animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
               exit={{ scale: 0.5, opacity: 0, filter: "blur(10px)" }}
@@ -134,19 +157,35 @@ export default function Workspace() {
               </div>
 
               {result.is_first_discovery && (
-                <motion.div 
-                    initial={{ y: 20, opacity: 0, scale: 0.8 }}
-                    animate={{ y: 0, opacity: 1, scale: 1 }}
-                    className="whitespace-nowrap bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-6 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] flex items-center gap-2 md:gap-3 z-20 border-2 border-white/30 text-sm md:text-lg tracking-wide"
-                >
-                    <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" /> NEW DISCOVERY!
-                </motion.div>
+                <div className="flex flex-col md:flex-row items-center gap-4 z-20">
+                    <motion.div 
+                        initial={{ y: 20, opacity: 0, scale: 0.8 }}
+                        animate={{ y: 0, opacity: 1, scale: 1 }}
+                        className="whitespace-nowrap bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-6 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] flex items-center gap-2 md:gap-3 border-2 border-white/30 text-sm md:text-lg tracking-wide"
+                    >
+                        <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" /> NEW DISCOVERY!
+                    </motion.div>
+
+                    <motion.button
+                        initial={{ opacity: 0, scale: 0 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.9 }}
+                        onClick={handleDownload}
+                        data-html2canvas-ignore
+                        className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-colors shadow-lg"
+                        title="Save Screenshot"
+                    >
+                        <Download className="w-5 h-5 md:w-6 md:h-6" />
+                    </motion.button>
+                </div>
               )}
               
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={handleReset}
+                data-html2canvas-ignore
                 className={clsx(
                     "px-12 py-4 rounded-full border-2 transition-all duration-300 font-black shadow-xl text-base md:text-lg backdrop-blur-xl uppercase tracking-widest",
                     themeColors.cardBg,
