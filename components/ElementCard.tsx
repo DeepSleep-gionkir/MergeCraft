@@ -19,8 +19,10 @@ const ElementCard = React.memo(({ element, onClick, className, compact = false, 
   const { theme } = useGameStore();
   const themeColors = themes[theme].colors;
 
-  // Truncate emoji to max 2 characters (using spread for surrogate pairs/graphemes)
-  const displayEmoji = [...element.emoji].slice(0, 2).join('');
+  // Handle multiple emojis
+  const emojis = [...element.emoji];
+  const isMultiEmoji = emojis.length > 1;
+  const displayEmoji = isMultiEmoji ? emojis.slice(0, 4) : emojis.slice(0, 1); // Limit to 4 for grid
 
   return (
     <motion.div
@@ -47,11 +49,29 @@ const ElementCard = React.memo(({ element, onClick, className, compact = false, 
       {/* Glow effect */}
       <div className={clsx("absolute inset-0 opacity-0 group-hover:opacity-30 transition-opacity duration-500 bg-gradient-to-tr from-transparent via-white to-transparent mix-blend-overlay")} />
       
-      <span className={clsx("z-10 drop-shadow-2xl leading-none filter shrink-0", 
+      <div className={clsx("z-10 drop-shadow-2xl filter shrink-0 flex flex-wrap items-center justify-center gap-1",
         layout === 'grid' 
-            ? (compact ? "text-3xl" : "text-5xl") 
-            : "text-3xl"
-      )}>{displayEmoji}</span>
+            ? (compact ? "w-full" : "w-48") 
+            : "w-auto"
+      )}>
+        {isMultiEmoji ? (
+            displayEmoji.map((emoji, i) => (
+                <span key={i} className={clsx(
+                    "leading-none",
+                    layout === 'grid'
+                        ? (compact ? "text-xs" : "text-4xl")
+                        : "text-2xl"
+                )}>{emoji}</span>
+            ))
+        ) : (
+            <span className={clsx(
+                "leading-none",
+                layout === 'grid' 
+                    ? (compact ? "text-3xl" : "text-5xl") 
+                    : "text-3xl"
+            )}>{displayEmoji.join('')}</span>
+        )}
+      </div>
       
       <span className={clsx("font-bold z-10 leading-tight tracking-tight truncate", 
         layout === 'grid' ? "text-center" : "text-left flex-1",

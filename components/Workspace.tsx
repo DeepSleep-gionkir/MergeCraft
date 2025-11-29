@@ -113,7 +113,7 @@ export default function Workspace() {
   };
 
   return (
-    <div className="flex-1 h-full relative overflow-hidden flex flex-col items-center justify-center p-4 md:p-8">
+    <div className="flex-1 h-full relative overflow-hidden flex flex-col items-center justify-start pt-24 md:pt-32 p-4 md:p-8">
       {/* Dynamic Background */}
       <div className={clsx("absolute inset-0 pointer-events-none transition-colors duration-1000", themes[theme].gradients.main)} />
       
