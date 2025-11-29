@@ -7,18 +7,18 @@ import { User } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 export default function LoginOverlay() {
-  const { hasSeenIntro, setHasSeenIntro, signInWithGoogle, user } = useGameStore();
+  const { hasVisited, setHasVisited, signInWithGoogle, user } = useGameStore();
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Only show if not visited AND not logged in
-    // If user is logged in, initUser will set hasSeenIntro=true anyway, but just in case
-    if (!hasSeenIntro && !user) {
+    // If user is logged in, initUser will set hasVisited=true anyway, but just in case
+    if (!hasVisited && !user) {
         setIsVisible(true);
     } else {
         setIsVisible(false);
     }
-  }, [hasSeenIntro, user]);
+  }, [hasVisited, user]);
 
   const handleGoogleLogin = async () => {
     try {
@@ -31,7 +31,7 @@ export default function LoginOverlay() {
   };
 
   const handleGuestLogin = () => {
-    setHasSeenIntro(true);
+    setHasVisited(true);
     setIsVisible(false);
   };
 
