@@ -3,12 +3,14 @@ import { persist } from 'zustand/middleware';
 import { Element } from '@/types';
 import { Theme } from './themes';
 import { supabase } from './supabase';
+import { User } from '@supabase/supabase-js';
 
 interface GameState {
   inventory: Element[];
   workspace: Element[];
   theme: Theme;
-  userId: string | null;
+  user: User | null; // Supabase Authenticated User
+  isGuest: boolean;
   addToInventory: (element: Element) => void;
   addToWorkspace: (element: Element) => void;
   removeFromWorkspace: (elementId: number) => void;
@@ -18,6 +20,8 @@ interface GameState {
   initUser: () => Promise<void>;
   saveProgress: () => Promise<boolean>;
   markAsSeen: (elementIds: number[]) => void;
+  signInWithGoogle: () => Promise<void>;
+  signOut: () => Promise<void>;
 }
 
 export const useGameStore = create<GameState>()(
@@ -31,36 +35,46 @@ export const useGameStore = create<GameState>()(
       ],
       workspace: [],
       theme: 'cosmic',
-      userId: null,
+      user: null,
+      isGuest: true,
       
       initUser: async () => {
-        let { userId } = get();
-        if (!userId) {
-          userId = crypto.randomUUID();
-          set({ userId });
-        }
+        // Check current session
+        const { data: { session } } = await supabase.auth.getSession();
         
-        // Sync with Supabase
-        if (userId) {
-            const { data } = await supabase
-                .from('user_progress')
-                .select('element_id, elements(*)')
-                .eq('user_id', userId);
-            
-            if (data && data.length > 0) {
-                const syncedInventory = data.map((item: any) => item.elements) as Element[];
-                // Merge with local inventory (deduplicate)
-                set((state) => {
-                    const combined = [...state.inventory];
-                    syncedInventory.forEach(newEl => {
-                        if (!combined.some(e => e.id === newEl.id)) {
-                            combined.push(newEl);
-                        }
-                    });
-                    return { inventory: combined };
-                });
-            }
+        if (session?.user) {
+            set({ user: session.user, isGuest: false });
+            // Load data for logged in user
+            await get().saveProgress(); // Sync local to cloud first (optional strategy) or just load
+            // Actually, better to load cloud data and merge
+            await loadCloudData(session.user.id, set, get);
         }
+
+        // Listen for auth changes
+        supabase.auth.onAuthStateChange(async (event, session) => {
+            if (session?.user) {
+                set({ user: session.user, isGuest: false });
+                await loadCloudData(session.user.id, set, get);
+            } else {
+                set({ user: null, isGuest: true });
+                // Optional: Clear inventory on logout? Or keep as guest?
+                // Keeping as guest is friendlier.
+            }
+        });
+      },
+
+      signInWithGoogle: async () => {
+        await supabase.auth.signInWithOAuth({
+            provider: 'google',
+            options: {
+                redirectTo: window.location.origin
+            }
+        });
+      },
+
+      signOut: async () => {
+        await supabase.auth.signOut();
+        set({ user: null, isGuest: true });
       },
 
       addToInventory: (element) => {
@@ -68,23 +82,25 @@ export const useGameStore = create<GameState>()(
         if (inventory.some((e) => e.id === element.id)) {
             return;
         }
-        set({ inventory: [...inventory, element] });
+        const newInventory = [...inventory, element];
+        set({ inventory: newInventory });
+        
+        // Auto-save if logged in
+        const { user } = get();
+        if (user) {
+             get().saveProgress();
+        }
       },
 
       saveProgress: async () => {
-        const { inventory, userId } = get();
-        if (!userId) return false;
+        const { inventory, user } = get();
+        if (!user) return false;
 
-        // Get already saved elements to avoid duplicates (or just use upsert/ignore)
-        // For simplicity, we'll just try to insert all and ignore conflicts if possible, 
-        // but Supabase insert doesn't support ignore on conflict easily without upsert.
-        // Better approach: Get IDs from DB, filter local inventory, insert new ones.
-        
         try {
             const { data: savedData } = await supabase
                 .from('user_progress')
                 .select('element_id')
-                .eq('user_id', userId);
+                .eq('user_id', user.id);
             
             const savedIds = new Set(savedData?.map((d: any) => d.element_id));
             const newElements = inventory.filter(e => !savedIds.has(e.id));
@@ -92,7 +108,7 @@ export const useGameStore = create<GameState>()(
             if (newElements.length > 0) {
                 const { error } = await supabase.from('user_progress').insert(
                     newElements.map(e => ({
-                        user_id: userId,
+                        user_id: user.id,
                         element_id: e.id
                     }))
                 );
@@ -129,3 +145,24 @@ export const useGameStore = create<GameState>()(
     }
   )
 );
+
+// Helper to load cloud data
+async function loadCloudData(userId: string, set: any, get: any) {
+    const { data } = await supabase
+        .from('user_progress')
+        .select('element_id, elements(*)')
+        .eq('user_id', userId);
+    
+    if (data && data.length > 0) {
+        const syncedInventory = data.map((item: any) => item.elements) as Element[];
+        set((state: GameState) => {
+            const combined = [...state.inventory];
+            syncedInventory.forEach(newEl => {
+                if (!combined.some(e => e.id === newEl.id)) {
+                    combined.push(newEl);
+                }
+            });
+            return { inventory: combined };
+        });
+    }
+}

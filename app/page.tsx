@@ -3,7 +3,7 @@
 import Inventory from '@/components/Inventory';
 import Workspace from '@/components/Workspace';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
-import SaveButton from '@/components/SaveButton';
+import AuthButton from '@/components/AuthButton';
 import { useGameStore } from '@/lib/store';
 import { useEffect } from 'react';
 
@@ -31,7 +31,7 @@ export default function Home() {
                 <span className="text-[10px] md:text-xs text-white/50 font-medium tracking-widest uppercase ml-1">Infinite Alchemy</span>
             </div>
             <div className="pointer-events-auto flex items-center gap-3">
-                <SaveButton />
+                <AuthButton />
                 <ThemeSwitcher />
             </div>
         </header>
