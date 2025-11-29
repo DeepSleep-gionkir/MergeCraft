@@ -12,6 +12,7 @@ interface GameState {
   user: User | null; // Supabase Authenticated User
   isGuest: boolean;
   hasVisited: boolean;
+  knownRecipes: Record<string, Element>; // Cache for known recipes: "idA-idB" -> ResultElement
   addToInventory: (element: Element) => void;
   addToWorkspace: (element: Element) => void;
   removeFromWorkspace: (elementId: number) => void;
@@ -19,6 +20,7 @@ interface GameState {
   setInventory: (inventory: Element[]) => void;
   setTheme: (theme: Theme) => void;
   setHasVisited: (hasVisited: boolean) => void;
+  addKnownRecipe: (idA: number, idB: number, result: Element) => void;
   initUser: () => Promise<void>;
   saveProgress: () => Promise<boolean>;
   markAsSeen: (elementIds: number[]) => void;
@@ -40,6 +42,7 @@ export const useGameStore = create<GameState>()(
       user: null,
       isGuest: true,
       hasVisited: false,
+      knownRecipes: {},
       
       initUser: async () => {
         // Check current session
@@ -70,6 +73,13 @@ export const useGameStore = create<GameState>()(
       },
 
       setHasVisited: (hasVisited) => set({ hasVisited }),
+
+      addKnownRecipe: (idA, idB, result) => {
+        const key = `${Math.min(idA, idB)}-${Math.max(idA, idB)}`;
+        set((state) => ({
+            knownRecipes: { ...state.knownRecipes, [key]: result }
+        }));
+      },
 
       signInWithGoogle: async () => {
         await supabase.auth.signInWithOAuth({

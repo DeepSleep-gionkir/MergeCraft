@@ -10,7 +10,7 @@ import { themes } from '@/lib/themes';
 import clsx from 'clsx';
 
 export default function Workspace() {
-  const { workspace, removeFromWorkspace, clearWorkspace, addToInventory, theme, markAsSeen, inventory } = useGameStore();
+  const { workspace, removeFromWorkspace, clearWorkspace, addToInventory, theme, markAsSeen, inventory, knownRecipes, addKnownRecipe } = useGameStore();
   const [isCombining, setIsCombining] = useState(false);
   const [result, setResult] = useState<Element | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -26,16 +26,29 @@ export default function Workspace() {
     setIsCombining(true);
     setError(null);
     
+    const idA = workspace[0].id;
+    const idB = workspace[1].id;
+    const cacheKey = `${Math.min(idA, idB)}-${Math.max(idA, idB)}`;
+
     // Mark used elements as seen
     markAsSeen(workspace.map(e => e.id));
+
+    // 1. Check Cache
+    if (knownRecipes[cacheKey]) {
+        const cachedResult = knownRecipes[cacheKey];
+        setResult(cachedResult);
+        addToInventory(cachedResult);
+        setIsCombining(false);
+        return;
+    }
 
     try {
       const response = await fetch('/api/combine', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          elementA_ID: workspace[0].id,
-          elementB_ID: workspace[1].id,
+          elementA_ID: idA,
+          elementB_ID: idB,
         }),
       });
 
@@ -57,6 +70,9 @@ export default function Workspace() {
 
       setResult(finalResult);
       addToInventory(finalResult);
+      
+      // 2. Update Cache
+      addKnownRecipe(idA, idB, finalResult);
       
     } catch (err: any) {
       setError(err.message);
