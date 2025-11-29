@@ -4,6 +4,7 @@ import Inventory from '@/components/Inventory';
 import Workspace from '@/components/Workspace';
 import ThemeSwitcher from '@/components/ThemeSwitcher';
 import AuthButton from '@/components/AuthButton';
+import LoginOverlay from '@/components/LoginOverlay';
 import { useGameStore } from '@/lib/store';
 import { useEffect } from 'react';
 

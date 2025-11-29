@@ -11,12 +11,14 @@ interface GameState {
   theme: Theme;
   user: User | null; // Supabase Authenticated User
   isGuest: boolean;
+  hasVisited: boolean;
   addToInventory: (element: Element) => void;
   addToWorkspace: (element: Element) => void;
   removeFromWorkspace: (elementId: number) => void;
   clearWorkspace: () => void;
   setInventory: (inventory: Element[]) => void;
   setTheme: (theme: Theme) => void;
+  setHasVisited: (hasVisited: boolean) => void;
   initUser: () => Promise<void>;
   saveProgress: () => Promise<boolean>;
   markAsSeen: (elementIds: number[]) => void;
@@ -37,13 +39,14 @@ export const useGameStore = create<GameState>()(
       theme: 'cosmic',
       user: null,
       isGuest: true,
+      hasVisited: false,
       
       initUser: async () => {
         // Check current session
         const { data: { session } } = await supabase.auth.getSession();
         
         if (session?.user) {
-            set({ user: session.user, isGuest: false });
+            set({ user: session.user, isGuest: false, hasVisited: true });
             // Load data for logged in user
             await get().saveProgress(); // Sync local to cloud first (optional strategy) or just load
             // Actually, better to load cloud data and merge
@@ -53,15 +56,20 @@ export const useGameStore = create<GameState>()(
         // Listen for auth changes
         supabase.auth.onAuthStateChange(async (event, session) => {
             if (session?.user) {
-                set({ user: session.user, isGuest: false });
+                set({ user: session.user, isGuest: false, hasVisited: true });
                 await loadCloudData(session.user.id, set, get);
             } else {
                 set({ user: null, isGuest: true });
-                // Optional: Clear inventory on logout? Or keep as guest?
-                // Keeping as guest is friendlier.
+                // If logging out, we might want to reset hasVisited to show login screen again?
+                // Or keep it true so they stay as guest?
+                // User requirement: "Guest login button... play... then click Google Login"
+                // So logout should probably just make them guest, not force overlay again immediately unless they refresh?
+                // Actually, if they explicitly logout, they are guest.
             }
         });
       },
+
+      setHasVisited: (hasVisited) => set({ hasVisited }),
 
       signInWithGoogle: async () => {
         await supabase.auth.signInWithOAuth({
