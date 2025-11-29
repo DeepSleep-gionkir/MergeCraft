@@ -134,7 +134,7 @@ export default function Workspace() {
       {/* Grid Pattern */}
       <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(ellipse_at_center,white,transparent_80%)] opacity-20 pointer-events-none mix-blend-overlay" />
 
-      <div className="relative z-10 w-full max-w-3xl aspect-video flex flex-col items-center justify-center">
+      <div className="relative z-10 w-full max-w-3xl md:aspect-video flex flex-col items-center justify-center">
         
         <AnimatePresence mode="wait">
           {result ? (
@@ -157,28 +157,23 @@ export default function Workspace() {
               </div>
 
               {result.is_first_discovery && (
-                <div className="flex flex-col md:flex-row items-center gap-4 z-20">
-                    <motion.div 
-                        initial={{ y: 20, opacity: 0, scale: 0.8 }}
-                        animate={{ y: 0, opacity: 1, scale: 1 }}
-                        className="whitespace-nowrap bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-6 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] flex items-center gap-2 md:gap-3 border-2 border-white/30 text-sm md:text-lg tracking-wide"
-                    >
-                        <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" /> NEW DISCOVERY!
-                    </motion.div>
-
-                    <motion.button
-                        initial={{ opacity: 0, scale: 0 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
+                <motion.div 
+                    initial={{ y: 20, opacity: 0, scale: 0.8 }}
+                    animate={{ y: 0, opacity: 1, scale: 1 }}
+                    className="z-20 flex items-center gap-2 md:gap-3 bg-gradient-to-r from-yellow-300 via-orange-400 to-red-500 text-white font-black px-5 py-2 md:px-8 md:py-3 rounded-full shadow-[0_0_30px_rgba(255,165,0,0.6)] border-2 border-white/30 text-sm md:text-lg tracking-wide"
+                >
+                    <Sparkles className="w-4 h-4 md:w-6 md:h-6 animate-spin-slow" />
+                    <span>NEW DISCOVERY!</span>
+                    <div className="w-px h-4 md:h-6 bg-white/30 mx-1 md:mx-2" />
+                    <button
                         onClick={handleDownload}
                         data-html2canvas-ignore
-                        className="p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-colors shadow-lg"
+                        className="p-1 rounded-full hover:bg-white/20 transition-colors"
                         title="Save Screenshot"
                     >
-                        <Download className="w-5 h-5 md:w-6 md:h-6" />
-                    </motion.button>
-                </div>
+                        <Download className="w-4 h-4 md:w-6 md:h-6" />
+                    </button>
+                </motion.div>
               )}
               
               <motion.button
