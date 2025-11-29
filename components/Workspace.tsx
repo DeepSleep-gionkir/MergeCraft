@@ -143,7 +143,7 @@ export default function Workspace() {
               </motion.button>
             </motion.div>
           ) : (
-            <div className="flex flex-col sm:flex-row items-center justify-center gap-4 sm:gap-8 w-full px-4">
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-[2vmin] sm:gap-8 w-full px-4">
                {/* Slot 1 */}
                <div className="relative group flex-1 flex justify-center sm:justify-end w-full sm:w-auto">
                  <div className={clsx("absolute inset-0 bg-gradient-to-b from-transparent to-white/5 rounded-full blur-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500")} />
@@ -152,36 +152,36 @@ export default function Workspace() {
                         <ElementCard 
                             element={workspace[0]} 
                             onClick={() => removeFromWorkspace(workspace[0].id)}
-                            className="w-32 h-32 md:w-52 md:h-52 text-5xl md:!text-7xl shadow-2xl border-2"
+                            className="w-[28vmin] h-[28vmin] md:w-52 md:h-52 text-[8vmin] md:!text-7xl shadow-2xl border-2"
                         />
                     </motion.div>
                  ) : (
                     <motion.div 
                         layoutId="slot1"
-                        className={clsx("w-32 h-32 md:w-52 md:h-52 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative z-10", themeColors.cardBorder, themeColors.textSecondary, "group-hover:border-white/40 group-hover:bg-white/5 group-hover:scale-105")}
+                        className={clsx("w-[28vmin] h-[28vmin] md:w-52 md:h-52 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative z-10", themeColors.cardBorder, themeColors.textSecondary, "group-hover:border-white/40 group-hover:bg-white/5 group-hover:scale-105")}
                     >
-                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm">
-                            <Plus className="w-8 h-8 opacity-30" />
+                        <div className="w-[14vmin] h-[14vmin] md:w-16 md:h-16 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm">
+                            <Plus className="w-[6vmin] h-[6vmin] md:w-8 md:h-8 opacity-30" />
                         </div>
                     </motion.div>
                  )}
                </div>
 
                {/* Connection / Status */}
-               <div className="flex flex-col items-center justify-center w-16 md:w-32 relative z-10 shrink-0 rotate-90 sm:rotate-0 my-2 sm:my-0">
+               <div className="flex flex-col items-center justify-center w-[10vmin] md:w-32 relative z-10 shrink-0 rotate-90 sm:rotate-0 my-2 sm:my-0">
                   {/* Energy Line */}
                   <div className={clsx("absolute top-1/2 left-0 w-full h-1 -translate-y-1/2 rounded-full overflow-hidden hidden sm:block", themeColors.cardBg)}>
                     <div className={clsx("absolute inset-0 w-full h-full animate-pulse opacity-50", theme === 'nature' ? 'bg-emerald-500' : 'bg-purple-500')} />
                   </div>
 
                   {isCombining ? (
-                      <div className="relative p-4 rounded-full bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl">
+                      <div className="relative p-[2vmin] md:p-4 rounded-full bg-black/50 backdrop-blur-xl border border-white/10 shadow-2xl">
                           <div className={clsx("absolute inset-0 blur-xl opacity-80 animate-pulse rounded-full", themeColors.accent)} />
-                          <Loader2 className={clsx("w-8 h-8 md:w-12 md:h-12 animate-spin relative z-10", themeColors.accent)} />
+                          <Loader2 className={clsx("w-[6vmin] h-[6vmin] md:w-12 md:h-12 animate-spin relative z-10", themeColors.accent)} />
                       </div>
                   ) : (
-                      <div className={clsx("relative p-3 rounded-full transition-colors duration-300 bg-black/30 backdrop-blur-md border border-white/5 shadow-lg", themeColors.cardBg)}>
-                        <Plus className={clsx("w-6 h-6 md:w-8 md:h-8 opacity-70", themeColors.textSecondary)} />
+                      <div className={clsx("relative p-[1.5vmin] md:p-3 rounded-full transition-colors duration-300 bg-black/30 backdrop-blur-md border border-white/5 shadow-lg", themeColors.cardBg)}>
+                        <Plus className={clsx("w-[4vmin] h-[4vmin] md:w-8 md:h-8 opacity-70", themeColors.textSecondary)} />
                       </div>
                   )}
                </div>
@@ -194,16 +194,16 @@ export default function Workspace() {
                         <ElementCard 
                             element={workspace[1]} 
                             onClick={() => removeFromWorkspace(workspace[1].id)}
-                            className="w-32 h-32 md:w-52 md:h-52 text-5xl md:!text-7xl shadow-2xl border-2"
+                            className="w-[28vmin] h-[28vmin] md:w-52 md:h-52 text-[8vmin] md:!text-7xl shadow-2xl border-2"
                         />
                     </motion.div>
                  ) : (
                     <motion.div 
                         layoutId="slot2"
-                        className={clsx("w-32 h-32 md:w-52 md:h-52 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative z-10", themeColors.cardBorder, themeColors.textSecondary, "group-hover:border-white/40 group-hover:bg-white/5 group-hover:scale-105")}
+                        className={clsx("w-[28vmin] h-[28vmin] md:w-52 md:h-52 rounded-3xl border-4 border-dashed flex items-center justify-center transition-all duration-300 relative z-10", themeColors.cardBorder, themeColors.textSecondary, "group-hover:border-white/40 group-hover:bg-white/5 group-hover:scale-105")}
                     >
-                        <div className="w-16 h-16 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm">
-                            <Plus className="w-8 h-8 opacity-30" />
+                        <div className="w-[14vmin] h-[14vmin] md:w-16 md:h-16 rounded-full bg-white/5 flex items-center justify-center backdrop-blur-sm">
+                            <Plus className="w-[6vmin] h-[6vmin] md:w-8 md:h-8 opacity-30" />
                         </div>
                     </motion.div>
                  )}
